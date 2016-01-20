@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from models import Player
+from models import Avatar, Player
 from simulation.avatar.avatar_wrapper import UserCodeException
 from simulation.turn_manager import world_state_provider
 
@@ -14,6 +14,16 @@ from simulation.turn_manager import world_state_provider
 # TODO: move all views that just render a template over to using django generic views
 
 logger = logging.getLogger("views")
+
+def edit_avatar(request):
+    if request.method == 'POST':
+        # TODO: Implement colour post to db.
+        pass
+    else:
+        if not request.user.avatar_set.all():
+            avatar = Avatar.objects.create(player=request.user)
+            avatar.save()
+        return render(request, 'players/avatar.html', {'avatars': request.user.avatar_set.all()})
 
 
 def register(request):

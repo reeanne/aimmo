@@ -15,8 +15,8 @@ urlpatterns = [
     url(r'^program/$', login_required(TemplateView.as_view(template_name='players/program.html')), name='program'),
     url(r'^watch/$', TemplateView.as_view(template_name='players/watch.html'), name='watch'),
     url(r'^statistics/$', TemplateView.as_view(template_name='players/statistics.html'), name='statistics'),
-    url(r'^avatar/$', TemplateView.as_view(template_name='players/avatar.html'), name='avatar'),
 
+    url(r'^avatar/$', views.edit_avatar, name='avatar'),
     url(r'^api/code/$', views.code, name='code'),
     url(r'^api/watch/state$', watch_views.get_world_state, name='get_world_state'),
 ]

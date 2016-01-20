@@ -11,20 +11,24 @@
     <div id="alerts" class="alert collapse" role="alert">
     </div>
 </div>
-<input type='text' id="custom" />
+
+<input type='text' id="body_stroke" />
+<input type='text' id="body_fill" />
+<input type='text' id="eye_stroke" />
+<input type='text' id="eye_fill" />
 
 <div class="row">
-
     <div id="editor" class="col-md-9"></div>
-
     <form id="saveForm" action="{% url 'code' %}" method="POST">
         {% csrf_token %}
-       
         <div id="buttons" class="col-md-3">
             <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" />
         </div>
     </form>
 </div>
+
+<span id="watch-world-canvas"></span>
+
 {% endblock %}
 
 {% block scripts %}
