@@ -11,15 +11,18 @@
     <div id="alerts" class="alert collapse" role="alert">
     </div>
 </div>
-
+Body stroke
 <input type='text' id="body_stroke" />
+Body fill
 <input type='text' id="body_fill" />
+Eye stroke
 <input type='text' id="eye_stroke" />
+Eye fill
 <input type='text' id="eye_fill" />
 
 <div class="row">
     <div id="editor" class="col-md-9"></div>
-    <form id="saveForm" action="{% url 'code' %}" method="POST">
+    <form id="saveForm" action="{% url 'avatar' %}" method="POST">
         {% csrf_token %}
         <div id="buttons" class="col-md-3">
             <input type="submit" id="saveBtn" type="button" class="btn btn-lg btn-primary text-center" value="Save" />
@@ -29,10 +32,12 @@
 
 <span id="watch-world-canvas"></span>
 
+
 {% endblock %}
 
 {% block scripts %}
 <link rel='stylesheet' href='/static/css/spectrum.css' />
+<script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>
 <script src='/static/js/lib/spectrum.js'></script>
 <script src='/static/js/avatar.js'></script>
  <script>

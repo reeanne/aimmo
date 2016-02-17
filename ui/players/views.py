@@ -1,9 +1,10 @@
 import logging
+import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from models import Avatar, Player
@@ -15,15 +16,24 @@ from simulation.turn_manager import world_state_provider
 
 logger = logging.getLogger("views")
 
-def edit_avatar(request):
+@login_required
+def avatar(request):
     if request.method == 'POST':
-        # TODO: Implement colour post to db.
-        pass
+        print "post"
+        avatar = request.user.avatar_set.all()[0]
+        appearance = json.loads(request.POST['appear'])
+        avatar.body_stroke = appearance['bodyStroke']
+        avatar.body_fill = appearance['bodyFill']
+        avatar.eye_stroke = appearance['eyeStroke']
+        avatar.eye_fill = appearance['eyeFill']
+        avatar.save()
+        return HttpResponse()
     else:
         if not request.user.avatar_set.all():
             avatar = Avatar.objects.create(player=request.user)
             avatar.save()
-        return render(request, 'players/avatar.html', {'avatars': request.user.avatar_set.all()})
+        print dict(colours=list(request.user.avatar_set.values('body_stroke', 'body_fill', 'eye_stroke', 'eye_fill')))
+        return JsonResponse(dict(colours=list(request.user.avatar_set.values('body_stroke', 'body_fill', 'eye_stroke', 'eye_fill'))))
 
 
 def register(request):

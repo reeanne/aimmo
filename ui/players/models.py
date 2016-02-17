@@ -1,6 +1,7 @@
 from threading import Thread
 import os
 
+from colorfield.fields import ColorField
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -18,10 +19,10 @@ class Player(models.Model):
 # TODO: switch code back  to Avatar from Player to support players undoing their code changes
 class Avatar(models.Model):
     player = models.ForeignKey(User)
-    body_stroke =  models.CharField(max_length=7, default="#0ff000")
-    body_fill = models.CharField(max_length=7, default="#111111")
-    eye_stroke = models.CharField(max_length=7, default="#aff000")
-    eye_fill = models.CharField(max_length=7, default="#eff000")
+    body_stroke =  ColorField(default="#0ff000")
+    body_fill = ColorField(default="#111111")
+    eye_stroke = ColorField(default="#aff000")
+    eye_fill = ColorField(default="#eff000")
 
 
 # TODO: this is temporary until we split the UI from the back-end
