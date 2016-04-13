@@ -5,20 +5,15 @@
 {% block content %}
 <div class="row">
     <h2>Avatar Settings</h2>
-    <p>Change your avatar!</p>
+    <p>Choose and change your avatar!</p>
 </div>
 <div class="row">
     <div id="alerts" class="alert collapse" role="alert">
     </div>
 </div>
-Body stroke
-<input type='text' id="body_stroke" />
-Body fill
-<input type='text' id="body_fill" />
-Eye stroke
-<input type='text' id="eye_stroke" />
-Eye fill
-<input type='text' id="eye_fill" />
+
+<button id="left">&#8592;</button>
+<button id="right">&#8594;</button>
 
 <div class="row">
     <div id="editor" class="col-md-9"></div>
@@ -32,11 +27,20 @@ Eye fill
 
 <span id="watch-world-canvas"></span>
 
+<table border="0">
+    <tr>
+        <td> Body stroke <input type='text' id="body_stroke" /></td>
+        <td> Body fill <input type='text' id="body_fill" /></td>
+        <td> Eye stroke <input type='text' id="eye_stroke" /></td>
+        <td> Eye fill <input type='text' id="eye_fill" /></td>
+    </tr>
+</table>
 
 {% endblock %}
 
 {% block scripts %}
 <link rel='stylesheet' href='/static/css/spectrum.css' />
+<link rel='stylesheet' href='/static/css/avatar.css' />
 <script type="text/javascript" src="/static/js/lib/raphael-min.js"></script>
 <script src='/static/js/lib/spectrum.js'></script>
 <script src='/static/js/avatar.js'></script>
