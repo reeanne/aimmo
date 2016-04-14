@@ -19,15 +19,15 @@ logger = logging.getLogger("views")
 @login_required
 def avatar(request):
     if request.method == 'POST':
-        avatar = request.user.avatar_set.all()
+        avatar = request.user.avatar_set.all()[0]
         appearance = json.loads(request.POST['appear'])
         avatar.body_stroke = appearance['bodyStroke']
         avatar.body_fill = appearance['bodyFill']
         avatar.eye_stroke = appearance['eyeStroke']
         avatar.eye_fill = appearance['eyeFill']
         avatar.save()
-        return _post_code_success_response("")
-    else: 
+        return HttpResponse()
+    else:
         if not request.user.avatar_set.all():
             avatar = Avatar.objects.create(player=request.user)
             avatar.save()
