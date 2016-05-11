@@ -19,20 +19,25 @@ logger = logging.getLogger("views")
 @login_required
 def avatar(request):
     if request.method == 'POST':
-        avatar = request.user.avatar_set.all()[0]
         appearance = json.loads(request.POST['appear'])
-        avatar.body_stroke = appearance['bodyStroke']
-        avatar.body_fill = appearance['bodyFill']
-        avatar.eye_stroke = appearance['eyeStroke']
-        avatar.eye_fill = appearance['eyeFill']
+        index = int(request.POST['index'])
+        print appearance
+        print type (index)
+        print request.user.avatar_set.all()
+        print list(request.user.avatar_set.all())[index]
+        avatar = list(request.user.avatar_set.all())[index]
+        avatar.body_stroke = appearance['body_stroke']
+        avatar.body_fill = appearance['body_fill']
+        avatar.eye_stroke = appearance['eye_stroke']
+        avatar.eye_fill = appearance['eye_fill']
         avatar.save()
         return HttpResponse()
     else:
         if not request.user.avatar_set.all():
             avatar = Avatar.objects.create(player=request.user)
             avatar.save()
-        print dict(colours=list(request.user.avatar_set.values('body_stroke', 'body_fill', 'eye_stroke', 'eye_fill')))
-        return JsonResponse(dict(colours=list(request.user.avatar_set.values('body_stroke', 'body_fill', 'eye_stroke', 'eye_fill'))))
+        print dict(colours=list(request.user.avatar_set.values('id', 'body_stroke', 'body_fill', 'eye_stroke', 'eye_fill')))
+        return JsonResponse(dict(colours=list(request.user.avatar_set.values('id', 'body_stroke', 'body_fill', 'eye_stroke', 'eye_fill'))))
 
 
 def register(request):
