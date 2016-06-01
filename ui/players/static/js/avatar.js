@@ -4,20 +4,24 @@ const VIEWER = Object.create({
 
 	index: 0,
 
+    angle: 1,
+
 	refreshPickers: function() {
-		$("#body_stroke").spectrum("set", this.data.colours[this.index].body_stroke);
-		$("#body_fill").spectrum("set", this.data.colours[this.index].body_fill);
-		$("#eye_stroke").spectrum("set", this.data.colours[this.index].eye_stroke);
-		$("#eye_fill").spectrum("set", this.data.colours[this.index].eye_fill);
+        var avatar = this.data.colours[this.index];
+		$("#body_stroke").spectrum("set", avatar.body_stroke);
+		$("#body_fill").spectrum("set", avatar.body_fill);
+		$("#eye_stroke").spectrum("set", avatar.eye_stroke);
+		$("#eye_fill").spectrum("set", avatar.eye_fill);
 	},
 
 	refreshPlayer: function(player, index, opacity = 1) {
-		player.playerBody.attr({"fill": this.data.colours[index].body_fill, "fill-opacity": opacity});
-		player.playerBody.attr({"stroke": this.data.colours[index].body_stroke, "stroke-opacity": opacity});
-		player.playerEyeLeft.attr({"fill": this.data.colours[index].eye_fill, "fill-opacity": opacity});
-        player.playerEyeLeft.attr({"stroke": this.data.colours[index].eye_stroke, "stroke-opacity": opacity});
-        player.playerEyeRight.attr({"fill": this.data.colours[index].eye_fill, "fill-opacity": opacity});
-        player.playerEyeRight.attr({"stroke": this.data.colours[index].eye_stroke, "stroke-opacity": opacity});
+        var avatar = this.data.colours[index];
+		player.playerBody.attr({"fill": avatar.body_fill, "fill-opacity": opacity});
+		player.playerBody.attr({"stroke": avatar.body_stroke, "stroke-opacity": opacity});
+		player.playerEyeLeft.attr({"fill": avatar.eye_fill, "fill-opacity": opacity});
+        player.playerEyeLeft.attr({"stroke": avatar.eye_stroke, "stroke-opacity": opacity});
+        player.playerEyeRight.attr({"fill": avatar.eye_fill, "fill-opacity": opacity});
+        player.playerEyeRight.attr({"stroke": avatar.eye_stroke, "stroke-opacity": opacity});
 	},
 
 	refreshAllPlayers: function() {
@@ -27,108 +31,77 @@ const VIEWER = Object.create({
 	},
 
     constructCentralAvatarElement: function() {
-    	const angle = 1
         const playerRadius = 80;
         const playerHeadRadius = playerRadius * 0.6;
-        const playerEyeRadius = playerRadius * 0.2;
         const playerX = (this.paper.width - playerHeadRadius) / 2;
         const playerY = (this.paper.height + playerHeadRadius) / 2;
 
-        this.central = {};
-        this.central.playerBody = this.paper.circle(playerX, playerY, playerRadius);
-        this.central.playerEyeLeft = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(angle - 1),
-            playerY + playerHeadRadius * Math.sin(angle - 1),
-            playerEyeRadius
-        );
-        this.central.playerEyeRight = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(angle + 1),
-            playerY + playerHeadRadius * Math.sin(angle + 1),
-            playerEyeRadius
-        );
-
-        this.refreshPlayer(this.central, this.index);
-
-        this.player = this.paper.set();
-        this.player.push(
-            this.playerBody,
-            this.playerEyeLeft,
-            this.playerEyeRight
-        );
+        this.constructAvatarElement(this.central, playerRadius, playerX, playerY, this.index, 1);  
     },
 
     constructLeftAvatarElement: function() {
-    	const angle = 1
-        const playerRadius = 60;
-        const playerHeadRadius = playerRadius * 0.6;
-        const playerEyeRadius = playerRadius * 0.2;
-        const playerX = (this.paper.width - playerHeadRadius) * this.sideAvatarRatio;
-        const playerY = (this.paper.height + playerHeadRadius) * this.sideAvatarRatio;
+        if (this.getLength() > 1) {
+            const playerRadius = 60;
+            const playerHeadRadius = playerRadius * 0.6;
+            const playerX = (this.paper.width - playerHeadRadius) * this.sideAvatarRatio;
+            const playerY = (this.paper.height + playerHeadRadius) * this.sideAvatarRatio;
 
-		this.left = {};
-        this.left.playerBody = this.paper.circle(playerX, playerY, playerRadius);
-        this.left.playerEyeLeft = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(angle - 1),
-            playerY + playerHeadRadius * Math.sin(angle - 1),
-            playerEyeRadius
-        );
-        this.left.playerEyeRight = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(angle + 1),
-            playerY + playerHeadRadius * Math.sin(angle + 1),
-            playerEyeRadius
-        );
-
-        this.refreshPlayer(this.left, Math.abs((this.index + 1) % this.data.colours.length), 0.5);
-
-        this.left.player = this.paper.set();
-        this.left.player.push(
-            this.left.playerBody,
-            this.left.playerEyeLeft,
-            this.left.playerEyeRight
-        );
+    		this.constructAvatarElement(this.left, playerRadius, playerX, playerY, this.index + 1, 0.5);
+        }
     },
 
      constructRightAvatarElement: function() {
-    	const angle = 1
-        const playerRadius = 60;
+        if (this.getLength() > 2) {
+            const playerRadius = 60;
+            const playerHeadRadius = playerRadius * 0.6;
+            const playerX = (this.paper.width - playerHeadRadius) * (1 - this.sideAvatarRatio);
+            const playerY = (this.paper.height + playerHeadRadius) * this.sideAvatarRatio;
+
+            this.constructAvatarElement(this.right, playerRadius, playerX, playerY, this.index - 1, 0.5);
+        }
+    },
+
+    constructAvatarElement: function(avatar, playerRadius, playerX, playerY, index, opacity) {
         const playerHeadRadius = playerRadius * 0.6;
         const playerEyeRadius = playerRadius * 0.2;
-        const playerX = (this.paper.width - playerHeadRadius) * (1 - this.sideAvatarRatio);
-        const playerY = (this.paper.height + playerHeadRadius) * this.sideAvatarRatio;
 
-		this.right = {};
-        this.right.playerBody = this.paper.circle(playerX, playerY, playerRadius);
-        this.right.playerEyeLeft = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(angle - 1),
-            playerY + playerHeadRadius * Math.sin(angle - 1),
+        avatar = {};
+        avatar.playerBody = this.paper.circle(playerX, playerY, playerRadius);
+        avatar.playerEyeLeft = this.paper.circle(
+            playerX + playerHeadRadius * Math.cos(this.angle - 1),
+            playerY + playerHeadRadius * Math.sin(this.angle - 1),
             playerEyeRadius
         );
-        this.right.playerEyeRight = this.paper.circle(
-            playerX + playerHeadRadius * Math.cos(angle + 1),
-            playerY + playerHeadRadius * Math.sin(angle + 1),
+        avatar.playerEyeRight = this.paper.circle(
+            playerX + playerHeadRadius * Math.cos(this.angle + 1),
+            playerY + playerHeadRadius * Math.sin(this.angle + 1),
             playerEyeRadius
         );
 
-        this.refreshPlayer(this.right, Math.abs((this.index - 1) % this.data.colours.length), 0.5);
+        this.refreshPlayer(avatar, Math.abs(index % this.getLength()), opacity);
 
-        this.right.player = this.paper.set();
-        this.right.player.push(
-            this.right.playerBody,
-            this.right.playerEyeLeft,
-            this.right.playerEyeRight
+        avatar.player = this.paper.set();
+        avatar.player.push(
+            avatar.playerBody,
+            avatar.playerEyeLeft,
+            avatar.playerEyeRight
         );
     },
 
     shiftLeft: function() {
-		this.index = Math.abs((this.index + 1) % this.data.colours.length);
+		this.index = Math.abs((this.index + this.getLength() + 1) % this.getLength());
 		this.refreshAllPlayers();
 		this.refreshPickers();	
     },
 
     shiftRight: function() {
-		this.index = Math.abs((this.index - 1) % this.data.colours.length);
+		this.index = Math.abs((this.index + this.getLength() - 1) % this.getLength());
     	this.refreshAllPlayers();
 		this.refreshPickers();	
+    },
+
+    getLength: function() {
+        return this.data.colours.length;
     }
 
 });
